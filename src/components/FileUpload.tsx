@@ -14,6 +14,7 @@ const FileUpload = () => {
     const { mutate, isPending } = useMutation({
         mutationFn: async ({ fileKey, fileName }: {fileKey: string, fileName: string}) => {
             const response = await axios.post("api/create-chat", {fileKey, fileName})
+            console.log(`Response ${response.data}`)
             return response.data
         }
     })
@@ -35,7 +36,7 @@ const FileUpload = () => {
                     } else {
                         mutate(data, {
                             onSuccess: ({chat_id}) => {
-                                toast.success("chat created")
+                                toast.success(`chat created. id: ${chat_id}`)
                                 router.push(`/chat/${chat_id}`)
                             },
                             onError: (err) => {
