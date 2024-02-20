@@ -6,8 +6,10 @@ import React from 'react'
 import { useDropzone } from 'react-dropzone'
 import axios from "axios";
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 const FileUpload = () => {
+    const router = useRouter()
     const [uploading, setUploading] = React.useState(false);
     const { mutate, isPending } = useMutation({
         mutationFn: async ({ fileKey, fileName }: {fileKey: string, fileName: string}) => {
@@ -15,7 +17,6 @@ const FileUpload = () => {
             return response.data
         }
     })
-
 
     const { getRootProps, getInputProps } = useDropzone({
         accept: { "application/pdf": [".pdf"]},
@@ -33,8 +34,9 @@ const FileUpload = () => {
                         toast.error("Something went wrong");
                     } else {
                         mutate(data, {
-                            onSuccess: (data) => {
-                                toast.success(data.message)
+                            onSuccess: ({chat_id}) => {
+                                toast.success("chat created")
+                                router.push(`/chat/${chat_id}`)
                             },
                             onError: (err) => {
                                 toast.error("Error creating chat.")
@@ -50,6 +52,7 @@ const FileUpload = () => {
             }
         }
     })
+
   return (
     <div className='p-2 bg-white rounded'>
         <div {...getRootProps({
